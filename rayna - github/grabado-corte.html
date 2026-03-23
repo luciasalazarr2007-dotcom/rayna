@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rayna | Soluciones en Madera para Empresas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root { --brand-cyan: #79d2cc; --dark: #0a0a0a; --card: #161616; --input: #1f1f1f; --border: #2a2a2a; --accent-orange: #ff8c00; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        body { background: var(--dark); color: white; padding-top: 240px; }
+
+        /* --- NAVEGACIÓN Y MENÚ --- */
+        header { position: fixed; top: 0; width: 100%; background: rgba(10,10,10,0.95); z-index: 2000; border-bottom: 1px solid var(--border); padding: 15px 0; backdrop-filter: blur(15px); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 0 5%; margin-bottom: 15px; }
+        .logo { font-weight: 800; font-size: 1.6rem; letter-spacing: 6px; color: var(--brand-cyan); text-decoration: none; }
+        .nav-icon { font-size: 1.3rem; color: white; cursor: pointer; background: none; border: none; position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .cart-count { position: absolute; top: 0; right: 0; background: var(--brand-cyan); color: black; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 10px; border: 2px solid var(--dark); }
+        
+        .mobile-menu { position: fixed; top: 0; left: -100%; width: 300px; height: 100vh; background: var(--card); z-index: 4000; transition: 0.4s; padding: 40px 30px; border-right: 1px solid var(--border); }
+        .mobile-menu.active { left: 0; }
+        .mobile-menu a { display: block; color: white; text-decoration: none; padding: 15px 0; font-size: 1.1rem; border-bottom: 1px solid #222; font-weight: 600; }
+
+        .search-bar { width: 90%; max-width: 600px; margin: 0 auto 15px; display: block; padding: 12px 20px; background: var(--input); border: 1px solid var(--border); border-radius: 12px; color: white; outline: none; }
+        .nav-bar { display: flex; justify-content: center; gap: 10px; overflow-x: auto; padding: 10px; scrollbar-width: none; }
+        .nav-link { color: #666; padding: 8px 18px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-decoration: none; border: 1px solid transparent; white-space: nowrap; transition: 0.3s; }
+        .nav-link.active { border-color: var(--brand-cyan); color: var(--brand-cyan); background: rgba(121, 210, 204, 0.05); }
+
+        /* --- PRODUCT LAYOUT --- */
+        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+        .intro-block { text-align: center; margin-bottom: 60px; }
+        .section-box { background: var(--card); border-radius: 30px; padding: 40px; margin-bottom: 60px; border: 1px solid var(--border); }
+        .product-layout { display: flex; align-items: flex-start; gap: 50px; }
+        .reverse { flex-direction: row-reverse; }
+        .product-media { flex: 1; position: sticky; top: 260px; }
+        .product-img { width: 100%; border-radius: 20px; aspect-ratio: 1/1; object-fit: cover; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .product-info { flex: 1.3; }
+
+        /* --- FORMULARIO --- */
+        .type-toggle { display: flex; gap: 10px; margin-bottom: 25px; background: #000; padding: 6px; border-radius: 14px; }
+        .toggle-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #555; cursor: pointer; font-weight: 800; font-size: 0.75rem; border-radius: 10px; }
+        .toggle-btn.active { background: var(--card); color: var(--brand-cyan); }
+
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: 0.7rem; font-weight: 700; color: #888; text-transform: uppercase; margin-bottom: 8px; }
+        input, select, textarea { width: 100%; padding: 12px; background: var(--input); border: 1px solid var(--border); border-radius: 10px; color: white; font-size: 0.9rem; }
+        
+        .price-tag { background: rgba(121, 210, 204, 0.05); padding: 25px; border-radius: 15px; text-align: center; margin: 20px 0; border: 1px solid rgba(121, 210, 204, 0.1); }
+        .price-val { font-size: 2.5rem; font-weight: 800; color: var(--brand-cyan); }
+        .btn { width: 100%; padding: 20px; border-radius: 15px; border: none; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-buy { background: var(--brand-cyan); color: #000; }
+        .btn-quote { background: var(--accent-orange); color: #000; }
+        
+        .info-note { font-size: 0.75rem; color: #666; line-height: 1.5; margin-top: 10px; }
+        .tech-small { font-size: 0.65rem; color: #444; margin-top: 5px; }
+        .badge { background: var(--brand-cyan); color: black; padding: 4px 10px; border-radius: 5px; font-size: 0.6rem; font-weight: 800; margin-bottom: 10px; display: inline-block; }
+
+        /* --- CARRITO --- */
+        .side-menu { position: fixed; top: 0; right: -100%; width: 450px; height: 100vh; background: var(--card); z-index: 5000; transition: 0.4s; padding: 40px; border-left: 1px solid var(--border); display: flex; flex-direction: column; }
+        .side-menu.active { right: 0; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: none; backdrop-filter: blur(5px); }
+        .overlay.active { display: block; }
+
+        @media (max-width: 900px) { body { padding-top: 320px; } .product-layout, .reverse { flex-direction: column; } .side-menu { width: 100%; } .product-media { position: relative; top: 0; } }
+    </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+<div class="mobile-menu" id="mobileMenu">
+    <h3>RAYNA EMPRESAS</h3>
+    <a href="#letras" onclick="closeAll()">Letras Madera</a>
+    <a href="#placas" onclick="closeAll()">Placas Pino</a>
+    <a href="#expositor" onclick="closeAll()">Expositor QR</a>
+    <a href="#qr-ind" onclick="closeAll()">QR Individual</a>
+    <a href="#etiquetas" onclick="closeAll()">Etiquetas</a>
+</div>
+
+<header>
+    <div class="header-top">
+        <button class="nav-icon" onclick="location.reload()"><i class="fas fa-home"></i></button>
+        <a href="#" class="logo">RAYNA</a>
+        <div class="header-actions">
+            <button class="nav-icon" onclick="openCart()">
+                <i class="fas fa-shopping-basket"></i>
+                <span class="cart-count" id="cartCount">0</span>
+            </button>
+            <button class="nav-icon" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        </div>
+    </div>
+    <input type="text" class="search-bar" placeholder="Buscar soluciones para tu negocio...">
+    <nav class="nav-bar">
+        <a href="#letras" class="nav-link">Letras</a>
+        <a href="#placas" class="nav-link">Placas</a>
+        <a href="#expositor" class="nav-link">Expositor QR</a>
+        <a href="#qr-ind" class="nav-link">QR Madera</a>
+        <a href="#etiquetas" class="nav-link">Etiquetas</a>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="intro-block">
+        <h1 style="color:var(--brand-cyan); font-size: 2.5rem; letter-spacing: -1px;">Soluciones en madera personalizadas para negocios</h1>
+        <p style="color:#888; margin-top:10px;">Fabricamos carteles, placas y elementos personalizados adaptados a tu imagen de marca.</p>
+    </div>
+
+    <section class="section-box" id="letras">
+        <div class="product-layout">
+            <div class="product-media">
+                <img src="https://images.unsplash.com/photo-1610433249563-000c242e2a16?q=80&w=800" class="product-img">
+                <div class="info-note" style="background:#222; padding:15px; border-radius:10px; margin-top:20px;">
+                    <strong style="color:var(--accent-orange)">⚠ AVISO</strong><br>
+                    Fabricamos piezas de hasta 30 x 40 cm. Para tamaños mayores o diseños complejos, solicitar presupuesto.
+                </div>
+            </div>
+            <div class="product-info">
+                <h2 style="color:var(--brand-cyan)">1. Letras en madera personalizadas</h2>
+                <p class="info-note">Diseña tu palabra o frase en madera con corte personalizado. Ideal para negocios, decoración o eventos.</p>
+                
+                <div class="type-toggle" style="margin-top:20px;">
+                    <button class="toggle-btn active" id="btnLText" onclick="setLMode('text')">🔘 Escribir texto</button>
+                    <button class="toggle-btn" id="btnLLogo" onclick="setLMode('logo')">🔘 Subir logotipo</button>
+                </div>
+
+                <div id="l_text_fields">
+                    <div class="form-group"><label>Texto</label><input type="text" id="l_val" placeholder="Ej: RAYNA" oninput="calcL()"></div>
+                    <div class="form-group"><label>Tipografía</label>
+                        <select><option>Moderna</option><option>Bebas Neue</option><option>Pacifico</option><option>Elegante</option></select>
+                    </div>
+                    <div class="form-group"><label>Montaje</label><select><option>Sin montaje</option><option>Cinta doble cara Pro</option><option>Separadores pared</option></select></div>
+                </div>
+
+                <div id="l_logo_fields" style="display:none;">
+                    <div class="form-group"><label>Subir archivo (SVG, PNG, PDF)</label><input type="file"></div>
+                    <p class="tech-small">Los logotipos serán revisados antes de fabricar para asegurar que son aptos para corte.</p>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="form-group"><label>Tamaño (Altura)</label>
+                        <select id="l_size" onchange="calcL()">
+                            <option value="12.90">10 cm — 12,90€</option>
+                            <option value="18.90">20 cm — 18,90€</option>
+                            <option value="24.90" selected>30 cm — 24,90€</option>
+                            <option value="29.90">40 cm — 29,90€</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Color</label>
+                        <select id="l_color" onchange="calcL()">
+                            <option value="0">Madera natural</option>
+                            <option value="3">Blanco (+3€)</option>
+                            <option value="3">Negro (+3€)</option>
+                            <option value="3">Rosa (+3€)</option>
+                            <option value="3">Azul (+3€)</option>
+                            <option value="3">Verde (+3€)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group"><label>Acabado</label>
+                    <select id="l_finish" onchange="calcL()">
+                        <option value="0">Mate (Incluido)</option>
+                        <option value="3">Satinado (+3€)</option>
+                        <option value="5">Brillo (+5€)</option>
+                    </select>
+                </div>
+
+                <div class="form-group"><label>Notas</label><textarea placeholder="Indicaciones especiales..."></textarea></div>
+
+                <div class="price-tag"><div class="price-val" id="l_total">0,00€</div><small>+1€ por letra (Base + letras + extras)</small></div>
+                
+                <p class="tech-small" style="text-align:center; margin-bottom:10px;">Las frases largas se fabrican en varias piezas para facilitar su colocación.</p>
+                <button class="btn btn-buy" id="l_main_btn" onclick="addL()">Añadir al carrito</button>
+                <p class="info-note" style="text-align:center;">Te enviamos una propuesta de diseño antes de fabricar.</p>
+                <p class="tech-small">Algunos diseños pueden adaptarse para asegurar un buen resultado en el corte.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-box" id="placas">
+        <div class="product-layout reverse">
+            <div class="product-media">
+                <img src="https://images.unsplash.com/photo-1596434446633-ef7621f37e8c?q=80&w=800" class="product-img">
+                <div class="info-note" style="background:#222; padding:15px; border-radius:10px; margin-top:20px;">
+                    <strong style="color:var(--accent-orange)">⚠ AVISO IMPORTANTE</strong><br>
+                    Tamaño máximo automático: 35 x 45 cm. Para tamaños más grandes consultar presupuesto.
+                </div>
+            </div>
+            <div class="product-info">
+                <h2 style="color:var(--brand-cyan)">2. Letrero con Logo o Frase en Madera de Pino</h2>
+                <p class="info-note">Placas de madera grabadas con tu diseño, logotipo o texto. Perfectas para negocios, señalización o decoración.</p>
+                
+                <div class="form-group" style="margin-top:20px;"><label>1. Subir Diseño (Imagen/Logo/Texto)</label><input type="file"></div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="form-group"><label>2. Tamaño</label>
+                        <select id="p_size" onchange="calcP()">
+                            <option value="9.90">10x10 cm — 9,90€</option>
+                            <option value="11.90">10x15 cm — 11,90€</option>
+                            <option value="12.90">15x15 cm — 12,90€</option>
+                            <option value="14.90">15x20 cm — 14,90€</option>
+                            <option value="16.90">20x20 cm — 16,90€</option>
+                            <option value="19.90" selected>20x30 cm — 19,90€</option>
+                            <option value="22.90">30x30 cm — 22,90€</option>
+                            <option value="24.90">30x40 cm — 24,90€</option>
+                            <option value="29.90">35x45 cm — 29,90€</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>3. Orientación</label><select><option>Horizontal</option><option>Vertical</option></select></div>
+                </div>
+
+                <div class="form-group"><label>4. Soporte</label>
+                    <select><option>🔘 Sin soporte (para pegar)</option><option>🔘 Con agujeros para colgar (Incluido)</option></select>
+                </div>
+
+                <div class="form-group"><label>5. Acabado</label>
+                    <select id="p_finish" onchange="calcP()">
+                        <option value="0">Natural</option>
+                        <option value="3">Barnizado mate (+3€)</option>
+                        <option value="5">Barnizado brillo (+5€)</option>
+                    </select>
+                </div>
+
+                <div class="form-group"><label>6. Notas</label><textarea placeholder="Instrucciones de diseño..."></textarea></div>
+
+                <div class="price-tag"><div class="price-val" id="p_total">19,90€</div></div>
+                
+                <p class="tech-small" style="text-align:center;">Revisamos tu diseño antes de fabricar para asegurar el mejor resultado.</p>
+                <button class="btn btn-buy" onclick="addP()">Añadir al carrito</button>
+                <p class="info-note" style="text-align:center;">Si no tienes diseño, te ayudamos sin coste adicional.</p>
+                <p class="tech-small">El grabado se adapta al material para garantizar calidad y durabilidad.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-box" id="expositor">
+        <div class="product-layout">
+            <div class="product-media"><img src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=800" class="product-img"></div>
+            <div class="product-info">
+                <h2 style="color:var(--brand-cyan)">3. Expositor QR completo para negocio</h2>
+                <p class="info-note">Solución completa para mostrador con logotipo grabado y códigos QR listos para usar.</p>
+                <ul class="info-note" style="margin-left: 20px;">
+                    <li>✔ Panel principal: 25,4 x 19 cm</li>
+                    <li>✔ 2 códigos QR laterales (Google, Insta...)</li>
+                    <li>✔ Base de madera incluida</li>
+                </ul>
+
+                <div class="form-group" style="margin-top:20px;"><label>Subir Logotipo</label><input type="file"></div>
+                <div class="form-group"><label>Añadir enlaces QR</label><textarea placeholder="1. https://... \n2. https://..."></textarea></div>
+                <div class="form-group"><label>Porta Tarjetas</label>
+                    <select id="qr_extra" onchange="calcQR()"><option value="59.90">Sin porta tarjetas (59,90€)</option><option value="62.90">Con Porta Tarjetas (+3€)</option></select>
+                </div>
+                
+                <div class="price-tag"><div class="price-val" id="qr_total">59,90€</div></div>
+                <button class="btn btn-buy" onclick="addItem('Expositor QR', 'Completo Premium', document.getElementById('qr_total').innerText)">Personalizar ahora</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-box" id="qr-ind">
+        <div class="product-layout reverse">
+            <div class="product-media"><img src="https://images.unsplash.com/photo-1614031679232-0dae79695627?q=80&w=800" class="product-img"></div>
+            <div class="product-info">
+                <h2 style="color:var(--brand-cyan)">4. Código QR en madera personalizado</h2>
+                <p class="info-note">Perfecto para mesas, mostradores o eventos.</p>
+                
+                <div class="form-group" style="margin-top:20px;"><label>Subir Logotipo (Archivo)</label><input type="file"></div>
+                <div class="form-group"><label>Introducir enlace QR</label><input type="text" placeholder="https://..."></div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="form-group"><label>Elegir Forma</label>
+                        <select><option>Rectangular</option><option>Cuadrado</option><option>Redondo</option><option>Arco</option></select>
+                    </div>
+                    <div class="form-group"><label>Elegir Tamaño</label>
+                        <select id="qri_size" onchange="calcQRI()">
+                            <option value="6.90">Pequeño (10 cm) — 6,90€</option>
+                            <option value="11.90" selected>Mediano (15 cm) — 11,90€</option>
+                            <option value="17.90">Grande (20 cm) — 17,90€</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="price-tag"><div class="price-val" id="qri_total">11,90€</div></div>
+                <button class="btn btn-buy" onclick="addQRI()">Personalizar QR</button>
+                <p class="tech-small" style="text-align:center;">Si no tienes diseño, nosotros lo preparamos por un coste adicional.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-box" id="etiquetas">
+        <div class="product-layout">
+            <div class="product-media"><img src="https://images.unsplash.com/photo-1622547748225-3fc4abd2cca0?q=80&w=800" class="product-img"></div>
+            <div class="product-info">
+                <h2 style="color:var(--brand-cyan)">5. Etiquetas de madera personalizadas</h2>
+                
+                <div class="form-group" style="margin-top:20px;"><label>Introduce tu texto (Opcional)</label><input type="text" placeholder="Nombre de marca..."></div>
+                <div class="form-group"><label>Subir logotipo</label><input type="file"></div>
+                
+                <div class="form-group"><label>Tipo de diseño</label>
+                    <select><option>Solo texto</option><option>Texto + logo</option><option>Solo logo</option></select>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="form-group"><label>Tamaño</label>
+                        <select id="e_size" onchange="calcE()">
+                            <option value="5">5 cm (Estándar ⭐)</option>
+                            <option value="6">6 cm (Recomendado)</option>
+                            <option value="8">8 cm (Premium)</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Cantidad (Packs)</label>
+                        <select id="e_pack" onchange="calcE()">
+                            <option value="10">Pack 10</option>
+                            <option value="25" selected>Pack 25</option>
+                            <option value="50">Pack 50</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="form-group"><label>Forma</label><select><option>Redonda</option><option>Cuadrada</option><option>Ovalada</option></select></div>
+                    <div class="form-group"><label>Agujero</label><select><option>Con agujero</option><option>Sin agujero</option></select></div>
+                </div>
+
+                <div class="form-group"><label>Grabado</label>
+                    <select id="e_side" onchange="calcE()"><option value="1">Una cara</option><option value="1.2">Doble cara (+20%)</option></select>
+                </div>
+
+                <div class="form-group">
+                    <input type="checkbox" id="e_design_extra" onchange="calcE()" style="width: auto;">
+                    <label style="display: inline; margin-left: 10px;">Quiero que me ayudéis con el diseño (+5€)</label>
+                </div>
+
+                <div class="price-tag">
+                    <div class="price-val" id="e_total">0,00€</div>
+                    <div id="e_promo" style="font-size: 0.7rem; color: var(--brand-cyan); margin-top: 5px;"></div>
+                </div>
+                <button class="btn btn-buy" onclick="addE()">Añadir al carrito</button>
+                <div class="tech-small" style="text-align: center; margin-top: 10px;">
+                    Producción en 24–72h | Revisamos todos los archivos
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<div id="cartMenu" class="side-menu">
+    <h2 style="color:var(--brand-cyan)">Mi Pedido</h2>
+    <div id="cartList" style="flex:1; overflow-y:auto; margin-top:20px; border-top:1px solid #222;"></div>
+    <div style="padding-top:20px; border-top:1px solid #222;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:800;"><span>SUBTOTAL</span><span id="subtotalVal">0,00€</span></div>
+        <button class="btn btn-buy" onclick="alert('Pedido enviado por WhatsApp/Telegram')">Finalizar Pedido</button>
+    </div>
+</div>
+
+<script>
+    let cart = [];
+
+    function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); }
+    function closeAll() { document.getElementById('mobileMenu').classList.remove('active'); document.getElementById('cartMenu').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
+
+    // LETRAS
+    function setLMode(m) {
+        document.getElementById('l_text_fields').style.display = m === 'text' ? 'block' : 'none';
+        document.getElementById('l_logo_fields').style.display = m === 'logo' ? 'block' : 'none';
+        document.getElementById('btnLText').classList.toggle('active', m === 'text');
+        document.getElementById('btnLLogo').classList.toggle('active', m === 'logo');
+        const btn = document.getElementById('l_main_btn');
+        if(m === 'logo') { btn.innerText = "Solicitar diseño y presupuesto"; btn.className = "btn btn-quote"; document.getElementById('l_total').innerText = "---"; }
+        else { btn.innerText = "Añadir al carrito"; btn.className = "btn btn-buy"; calcL(); }
+    }
+
+    function calcL() {
+        if(document.getElementById('btnLLogo').classList.contains('active')) return;
+        const base = parseFloat(document.getElementById('l_size').value);
+        const count = (document.getElementById('l_val').value || "").replace(/\s/g, '').length;
+        const extras = parseFloat(document.getElementById('l_color').value) + parseFloat(document.getElementById('l_finish').value);
+        document.getElementById('l_total').innerText = (base + count + extras).toFixed(2).replace('.',',') + "€";
+    }
+
+    // PLACAS
+    function calcP() {
+        document.getElementById('p_total').innerText = (parseFloat(document.getElementById('p_size').value) + parseFloat(document.getElementById('p_finish').value)).toFixed(2).replace('.',',') + "€";
+    }
+
+    // EXPOSITOR QR
+    function calcQR() {
+        document.getElementById('qr_total').innerText = parseFloat(document.getElementById('qr_extra').value).toFixed(2).replace('.',',') + "€";
+    }
+
+    // QR INDIVIDUAL
+    function calcQRI() {
+        document.getElementById('qri_total').innerText = parseFloat(document.getElementById('qri_size').value).toFixed(2).replace('.',',') + "€";
+    }
+
+    // ETIQUETAS (LÓGICA COMPLEJA)
+    function calcE() {
+        const size = document.getElementById('e_size').value;
+        const pack = document.getElementById('e_pack').value;
+        const sideMult = parseFloat(document.getElementById('e_side').value);
+        const designExtra = document.getElementById('e_design_extra').checked ? 5 : 0;
+        
+        const prices = {
+            "5": {"10": 12.90, "25": 24.90, "50": 39.90},
+            "6": {"10": 14.90, "25": 29.90, "50": 44.90},
+            "8": {"10": 18.90, "25": 34.90, "50": 54.90}
+        };
+
+        let base = prices[size][pack];
+        let total = (base * sideMult) + designExtra;
+        
+        document.getElementById('e_total').innerText = total.toFixed(2).replace('.',',') + "€";
+        
+        // Sugerencias visuales
+        let promo = "";
+        if(size == "5" && pack == "25") promo = "⭐ MÁS VENDIDO";
+        if(size == "6" && pack == "50") promo = "🚀 MEJOR OPCIÓN CALIDAD/PRECIO";
+        document.getElementById('e_promo').innerText = promo;
+    }
+
+    // CARRITO
+    function openCart() { document.getElementById('cartMenu').classList.add('active'); document.getElementById('overlay').classList.add('active'); }
+    function addItem(title, desc, price) {
+        cart.push({ title, desc, price: parseFloat(price.replace(',','.')) });
+        updateCartUI();
+        openCart();
+    }
+
+    function addL() { if(document.getElementById('l_main_btn').innerText.includes("Solicitar")) return alert("Presupuesto solicitado"); addItem("Letras Madera", document.getElementById('l_val').value, document.getElementById('l_total').innerText); }
+    function addP() { addItem("Placa Pino", "Grabado Pro", document.getElementById('p_total').innerText); }
+    function addQRI() { addItem("QR Individual", "Madera", document.getElementById('qri_total').innerText); }
+    function addE() { addItem("Pack Etiquetas", "Personalizadas", document.getElementById('e_total').innerText); }
+
+    function updateCartUI() {
+        const list = document.getElementById('cartList');
+        list.innerHTML = "";
+        let sub = 0;
+        cart.forEach(item => {
+            sub += item.price;
+            list.innerHTML += `<div style="padding:15px 0; border-bottom:1px solid #222;"><strong>${item.title}</strong><br><small>${item.price.toFixed(2)}€</small></div>`;
+        });
+        document.getElementById('cartCount').innerText = cart.length;
+        document.getElementById('subtotalVal').innerText = sub.toFixed(2).replace('.',',') + "€";
+    }
+
+    // Init
+    calcL(); calcP(); calcQR(); calcQRI(); calcE();
+</script>
+</body>
+</html>
