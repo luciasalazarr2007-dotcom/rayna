@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RAYNA | DTF por metros</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --brand-cyan: #79d2cc; --dark-bg: #0a0a0a; --card-bg: #121212; --accent-yellow: #f9d423; --error: #ff4747; --border: #222; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--dark-bg); color: white; padding-top: 180px; min-height: 100vh; overflow-x: hidden; }
+
+        /* HEADER & UI ELEMENTS */
+        header { position: fixed; top: 0; left: 0; width: 100%; background: rgba(10,10,10,0.98); z-index: 1000; padding: 15px 0; border-bottom: 1px solid #1a1a1a; backdrop-filter: blur(10px); }
+        .nav-top { display: flex; justify-content: space-between; align-items: center; padding: 0 5%; margin-bottom: 15px; }
+        .logo { font-weight: 800; font-size: 1.6rem; letter-spacing: 10px; color: var(--brand-cyan); text-transform: uppercase; cursor: pointer; }
+        
+        .nav-right { display: flex; gap: 10px; align-items: center; }
+        .icon-btn { position: relative; width: 45px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        #cart-count {
+            background: var(--brand-cyan); color: black; font-size: 0.7rem; font-weight: 900;
+            min-width: 18px; height: 18px; border-radius: 50%;
+            position: absolute; top: 0; right: 0;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5); z-index: 10;
+        }
+
+        .search-container { width: 90%; max-width: 800px; margin: 0 auto 10px; }
+        .search-container input { width: 100%; padding: 12px 20px; background: #161616; border: 1px solid #222; border-radius: 8px; color: white; outline: none; font-size: 0.9rem; }
+        
+        .categories-bar { display: flex; justify-content: flex-start; gap: 8px; padding: 10px 5%; overflow-x: auto; scrollbar-width: none; }
+        .categories-bar::-webkit-scrollbar { display: none; }
+        .cat-btn { background: transparent; color: #666; border: 1px solid transparent; padding: 6px 14px; border-radius: 20px; font-size: 0.7rem; cursor: pointer; text-transform: uppercase; font-weight: 700; white-space: nowrap; transition: 0.3s; }
+        .cat-btn.active { color: var(--brand-cyan); border-color: var(--brand-cyan); background: rgba(121, 210, 204, 0.1); }
+
+        /* GRID */
+        .container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; padding: 20px 5%; max-width: 1600px; margin: 0 auto; }
+        .product-card { background: var(--card-bg); border-radius: 12px; border: 1px solid #1f1f1f; overflow: hidden; text-align: center; display: flex; flex-direction: column; transition: 0.3s; }
+        .product-img { width: 100%; height: 140px; background: white; display: flex; align-items: center; justify-content: center; padding: 10px; }
+        .product-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .product-info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-info h3 { font-size: 0.65rem; text-transform: uppercase; margin-bottom: 8px; min-height: 30px; }
+        .price { color: var(--brand-cyan); font-weight: 800; font-size: 0.9rem; margin-bottom: 10px; }
+
+        /* MODALS */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 2500; backdrop-filter: blur(8px); }
+        .modal-content { background: #0f0f0f; width: 95%; max-width: 400px; padding: 25px; border-radius: 20px; border: 1px solid var(--border); }
+        .input-min { width: 100%; padding: 12px; background: #161616; border: 1px solid var(--border); border-radius: 10px; color: white; outline: none; margin-top: 8px; font-size: 0.85rem; }
+        
+        .pill-group { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; padding: 5px; border-radius: 12px; }
+        .pill { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.65rem; color: #666; cursor: pointer; background: #161616; text-transform: uppercase; font-weight: 700; }
+        .pill.active { background: var(--brand-cyan); color: black; border-color: var(--brand-cyan); }
+
+        /* SIDEBARS */
+        .sidebar { position: fixed; top: 0; right: -100%; width: 420px; height: 100%; background: #0d0d0d; z-index: 2200; border-left: 1px solid var(--border); display: flex; flex-direction: column; transition: 0.4s; padding: 25px; }
+        .sidebar.active { right: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .close-sidebar { font-size: 1.5rem; color: #666; cursor: pointer; transition: 0.3s; padding: 5px; }
+        .close-sidebar:hover { color: var(--brand-cyan); }
+
+        .service-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: #161616; border-radius: 12px; margin-bottom: 10px; border: 1px solid transparent; text-decoration: none; color: white; transition: 0.3s; }
+        .service-item:hover { border-color: var(--brand-cyan); transform: translateX(-5px); }
+        .service-item i { color: var(--brand-cyan); font-size: 1.1rem; width: 20px; text-align: center; }
+
+        .checkout-step { display: none; flex-direction: column; height: 100%; }
+        .checkout-step.active { display: flex; }
+        .cart-items { flex-grow: 1; overflow-y: auto; margin: 10px 0; }
+        
+        .cart-item { background: #161616; padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 1px solid #222; }
+        .badge-custom { display: inline-block; background: rgba(121, 210, 204, 0.1); color: var(--brand-cyan); font-size: 0.55rem; padding: 2px 6px; border-radius: 4px; margin-top: 5px; margin-right: 5px; font-weight: 800; border: 1px solid var(--brand-cyan); }
+        
+        .qty-box { display: flex; align-items: center; background: #000; border: 1px solid #333; border-radius: 6px; padding: 4px 10px; gap: 15px; }
+        .qty-btn { cursor: pointer; color: var(--brand-cyan); font-weight: 900; font-size: 1.1rem; }
+
+        .btn-rayna { background: var(--brand-cyan); color: black; border: none; padding: 12px; border-radius: 10px; font-weight: 800; text-transform: uppercase; font-size: 0.7rem; cursor: pointer; width: 100%; letter-spacing: 1px; }
+        .btn-outline { background: transparent; border: 1px solid #333; color: #888; margin-top: 8px; }
+
+        .custom-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #1a1a1a; font-size: 0.75rem; }
+        .switch { position: relative; display: inline-block; width: 34px; height: 18px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--brand-cyan); }
+        input:checked + .slider:before { transform: translateX(16px); background-color: black; }
+
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 2100; backdrop-filter: blur(4px); }
+
+        #successModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 3000; display: none; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .success-box { background: #111; padding: 40px 25px; border-radius: 24px; border: 1px solid var(--border); max-width: 450px; position: relative; }
+        .warning-box { background: rgba(249, 212, 35, 0.1); border: 1px solid var(--accent-yellow); color: var(--accent-yellow); padding: 15px; border-radius: 12px; font-size: 0.8rem; margin: 25px 0; line-height: 1.4; text-align: left; }
+
+        @media (max-width: 1100px) { .container { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 650px) {
+            .container { grid-template-columns: repeat(2, 1fr); }
+            .sidebar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="nav-top">
+        <div class="nav-left" onclick="window.location.href='index - copia - copia.html#servicios'" style="cursor:pointer;">
+            <i class="fas fa-home"></i>
+        </div>
+        <div class="logo">DTF por metros</div>
+        <div class="nav-right">
+            <div class="icon-btn" onclick="toggleCart()">
+                <i class="fas fa-shopping-basket" style="font-size: 1.3rem;"></i>
+                <span id="cart-count">0</span>
+            </div>
+            <div class="icon-btn" onclick="toggleServices()">
+                <i class="fas fa-bars" style="font-size: 1.3rem;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="search-container"><input type="text" id="searchInput" onkeyup="buscar()" placeholder="Buscar producto..."></div>
+    <div class="categories-bar" id="catBar"></div>
+</header>
+
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+<div id="servicesSidebar" class="sidebar">
+    <div class="sidebar-header">
+        <h3 style="color:var(--brand-cyan); font-weight:800; letter-spacing: 2px;">SERVICIOS</h3>
+        <i class="fas fa-times close-sidebar" onclick="toggleServices()"></i>
+    </div>
+    <div class="service-list">
+        <a href="pack-corporativo.html" class="service-item"><i class="fas fa-briefcase"></i><span>Packs para empresas</span></a>
+        <a href="rotulacion-vinilos.html" class="service-item"><i class="fas fa-layer-group"></i><span>Rotulación y vinilos</span></a>
+        <a href="grabado-corte.html" class="service-item"><i class="fas fa-bolt"></i><span>Grabado y corte láser</span></a>
+        <a href="regalos.html" class="service-item"><i class="fas fa-gift"></i><span>Regalos personalizados</span></a>
+        <a href="dtf-textil.html" class="service-item"><i class="fas fa-scroll"></i><span>DTF por metros</span></a>
+        <a href="dtf-uv.html" class="service-item"><i class="fas fa-certificate"></i><span>DTF UV por metros</span></a>
+    </div>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h3 id="mTitle" style="color:var(--brand-cyan); font-weight:800; text-align:center; margin-bottom:15px;"></h3>
+        <div class="pill-group">
+            <div class="pill active" id="pillAdulto" onclick="setType('adulto')">Adulto</div>
+            <div class="pill" id="pillNino" onclick="setType('nino')">Niño</div>
+        </div>
+        <div style="margin-top:15px">
+            <label style="font-size:0.6rem; font-weight:800; color:#666;">TALLA *</label>
+            <div class="pill-group" id="sizeGroup"></div>
+            <p id="sizeError" style="color:var(--error); font-size:0.65rem; display:none; margin-top:5px;">Elige una talla</p>
+        </div>
+        <input type="text" id="colorInput" class="input-min" placeholder="Color de la prenda">
+        <div style="margin-top:15px">
+            <div class="custom-row"><span>Logo Pecho (+3.50€)</span><label class="switch"><input type="checkbox" id="checkPecho" onchange="calcularTotal()"><span class="slider"></span></label></div>
+            <div class="custom-row"><span>Logo Espalda (+6.50€)</span><label class="switch"><input type="checkbox" id="checkEspalda" onchange="calcularTotal()"><span class="slider"></span></label></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+            <div id="mPrice" style="font-size:1.4rem; font-weight:800;">0.00€</div>
+            <button class="btn-rayna" style="width:auto; padding:12px 25px;" onclick="validateAndAdd()">Añadir</button>
+        </div>
+        <button class="btn-rayna btn-outline" style="border:none;" onclick="closeModal()">Cancelar</button>
+    </div>
+</div>
+
+<div id="cartSidebar" class="sidebar">
+    <div class="sidebar-header">
+        <h3 style="color:var(--brand-cyan); font-weight:800;">MI CESTA</h3>
+        <i class="fas fa-times close-sidebar" onclick="toggleCart()"></i>
+    </div>
+
+    <div id="step1" class="checkout-step active">
+        <div id="cartItems" class="cart-items"></div>
+        <div style="border-top:1px solid #222; padding-top:15px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px;"><span style="color:#666;">Subtotal</span><span id="subtotalPrice" style="font-weight:800">0.00€</span></div>
+            <button class="btn-rayna" onclick="changeStep(2)">Continuar Envío</button>
+        </div>
+    </div>
+
+    <div id="step2" class="checkout-step">
+        <select id="deliveryType" onchange="updateShippingUI()" class="input-min">
+            <option value="store">Recogida en Tienda (Gratis)</option>
+            <option value="home">Envío a domicilio</option>
+        </select>
+        <div id="shippingFields" style="display:none;">
+            <input type="text" id="address" class="input-min" placeholder="Dirección completa">
+            <select id="shippingZone" onchange="updateShippingUI()" class="input-min">
+                <option value="5.50">Península (+5.50€)</option>
+                <option value="12.00">Baleares (+12.00€)</option>
+            </select>
+        </div>
+        <div style="margin-top:auto">
+            <button class="btn-rayna" onclick="changeStep(3)">Siguiente</button>
+            <button class="btn-rayna btn-outline" onclick="changeStep(1)">Atrás</button>
+        </div>
+    </div>
+
+    <div id="step3" class="checkout-step">
+        <input type="text" id="userName" class="input-min" placeholder="Tu nombre">
+        <input type="tel" id="userPhone" class="input-min" placeholder="WhatsApp">
+        
+        <div id="logoUploadSection" style="display:none; background:#1a1a1a; padding:15px; border-radius:12px; margin-top:10px;">
+            <p style="font-size:0.65rem; font-weight:800; color:var(--brand-cyan); margin-bottom:8px;">🛠️ SUBIR LOGOS:</p>
+            <input type="file" id="logoFile" class="input-min">
+        </div>
+
+        <div class="pill-group" style="margin-top:15px">
+            <div class="pill" id="payBizum" onclick="selectPay('bizum')">Bizum</div>
+            <div class="pill" id="payTrans" onclick="selectPay('trans')">IBAN</div>
+        </div>
+
+        <div id="infoPayBox" style="background:#161616; padding:15px; border-radius:12px; margin-top:10px; display:none; text-align:center;">
+            <div id="payDetails" style="color:var(--brand-cyan); font-weight:800; margin-bottom:10px;"></div>
+            <div style="border-top: 1px solid #222; padding-top:10px;">
+                <p style="font-size:0.6rem; color:#888; margin-bottom:5px; text-transform:uppercase; font-weight:800;">Adjuntar Comprobante Pago:</p>
+                <input type="file" id="receiptFile" class="input-min" style="font-size:0.7rem;">
+            </div>
+        </div>
+
+        <div style="margin-top:auto">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-weight:800;"><span>TOTAL</span><span id="finalTotal">0.00€</span></div>
+            <button class="btn-rayna" id="btnConfirmar" style="background:white; color:black;" onclick="sendToTelegram()">Confirmar Pedido</button>
+        </div>
+    </div>
+</div>
+
+<div id="successModal">
+    <div class="success-box">
+        <i class="fas fa-check-circle" style="font-size:4.5rem; color:var(--brand-cyan); margin-bottom: 15px;"></i>
+        <h2 style="margin-bottom:10px; color:white; font-weight: 800;">¡PEDIDO RECIBIDO!</h2>
+        <p id="orderIdText" style="color:var(--brand-cyan); font-weight:800; font-size:1.6rem; margin-bottom: 5px;"></p>
+        <div class="warning-box">
+            <strong>ACCIÓN REQUERIDA:</strong><br>
+            Envía el comprobante por WhatsApp para validar el pedido.
+        </div>
+        <button class="btn-rayna" style="background:#25d366; color:white;" id="btnWhatsAppFinal">WHATSAPP</button>
+        <p style="margin-top:25px; color:#444; cursor:pointer;" onclick="location.reload()">Volver a la tienda</p>
+    </div>
+</div>
+
+<div class="container" id="grid"></div>
+
+<script>
+    const TG_TOKEN = "8426925644:AAF8LzQ_Srw0CoUVmtX4dc8NbwYLXph4Hd8";
+    const TG_CHAT_ID = "8292097424";
+
+    const products = [
+        { id:1, cat:'camisetas', name:"Camiseta Roly Beagle", price:4.95, kidPrice:4.10, hasKids:true, img:"Camiseta-Roly-Beagle-adulto.jpg" },
+        { id:2, cat:'camisetas', name:"Camiseta técnica Bahrain ROLY", price:4.95, kidPrice:4.10, hasKids:true, img:"Camiseta-Bahrain-ROLY.jpg" },
+        { id:3, cat:'camisetas', name:"Camiseta Bahrain woman", price:14.95, hasKids:false, img:"Camiseta-Bahrain-woman.jpg" },
+        { id:4, cat:'camisetas', name:"Camiseta Jamaica", price:4.95, kidPrice:4.10, hasKids:true, img:"Camiseta-Jamaica.jpg" },
+        { id:5, cat:'camisetas', name:"Polo Roly Star", price:11.95, kidPrice:10.20, hasKids:true, img:"Polo-Roly-Star-Adulto.jpg" },
+        { id:6, cat:'camisetas', name:"Ferox Roly", price:16.50, hasKids:false, img:"Ferox-Roly.jpg" },
+        { id:7, cat:'camisetas', name:"Ferox Woman Roly", price:16.50, hasKids:false, img:"Ferox-Woman-Roly.jpg" },
+        { id:8, cat:'camisetas', name:"Panacea Roly", price:13.50, hasKids:false, img:"Panacea-Roly.jpg" },
+        { id:10, cat:'sudaderas', name:"Sudadera básica ROLY", price:15.20, kidPrice:15.20, hasKids:true, img:"Sudadera-Roly-Clasica.jpg" },
+        { id:11, cat:'sudaderas', name:"Sudadera con capucha Urban ROLY", price:19.95, kidPrice:6.82, hasKids:true, img:"Sudadera-Roly-Capucha.jpg" },
+        { id:12, cat:'sudaderas', name:"Sudadera con capucha Urban woman", price:7.87, hasKids:false, img:"Sudadera-con-capucha-Urban-woman.jpg" },
+        { id:13, cat:'sudaderas', name:"Chaqueta softshell Antartida ROLY", price:12.55, kidPrice:11.49, hasKids:true, img:"Chaqueta-Softshell-Antartida.jpg" },
+        { id:14, cat:'sudaderas', name:"Chaqueta softshell SIBERIA ROLY", price:16.75, hasKids:false, img:"Chaqueta-Softshell-Siberia.jpg" },
+        { id:20, cat:'pantalones', name:"Pantalón Roly Daily", price:17.75, hasKids:false, img:"Pantalón-Roly-Daily.jpg" },
+        { id:21, cat:'pantalones', name:"Pantalón Roly Daily Stretch", price:26.50, hasKids:false, img:"Pantalón-Roly-Daily-Stretch.jpg" },
+        { id:22, cat:'pantalones', name:"Pantalón Roly Daily Stretch Woman", price:26.50, hasKids:false, img:"Pantalón-Roly-Daily-Stretch-Woman.jpg" },
+        { id:23, cat:'pantalones', name:"Pantalón Velilla 103004", price:24.10, hasKids:false, img:"Pantalón-Velilla-103004.jpg" },
+        { id:24, cat:'pantalones', name:"Pantalón Velilla 103026", price:18.37, hasKids:false, img:"Pantalón-Velilla-103026.jpg" },
+        { id:25, cat:'pantalones', name:"Pantalón Velilla Arrow 103030X", price:36.50, hasKids:false, img:"Pantalón-Velilla-Arrow-103030X.jpg" },
+        { id:26, cat:'pantalones', name:"Fiber Roly", price:20.60, hasKids:false, img:"Fiber-Roly.jpg" },
+        { id:27, cat:'pantalones', name:"Vadecum Roly", price:13.50, hasKids:false, img:"Vadecum-Roly.jpg" },
+        { id:28, cat:'pantalones', name:"Care Roly", price:14.50, hasKids:false, img:"Care-Roly.jpg" },
+        /* CORRECCIÓN: Unificada categoría 'alta visibilidad' */
+        { id:30, cat:'alta visibilidad', name:"Camiseta Delta Roly", price:11.80, hasKids:false, img:"Camiseta-Delta-Roly.jpg" },
+        { id:31, cat:'alta visibilidad', name:"Chaleco Polux roly", price:7.50, hasKids:false, img:"Chaleco-Polux-roly.jpg" },
+        { id:32, cat:'alta visibilidad', name:"Pantalón Daily HV Roly", price:21.85, hasKids:false, img:"Pantalón-Daily-HV-Roly.jpg" },
+        { id:33, cat:'alta visibilidad', name:"DAILY STRETCH HV roly", price:32.90, hasKids:false, img:"DAILY-STRETCH-HV-roly.jpg" },
+        { id:34, cat:'alta visibilidad', name:"Chaqueta Antares", price:42.50, hasKids:false, img:"chaqueta-antares.jpg" },
+        { id:40, cat:'calzado', name:"Ulmus Roly", price:49.50, hasKids:false, img:"Ulmus-Roly-(Zapato-S3).jpg" },
+        { id:41, cat:'calzado', name:"VITINJA Roly", price:62.30, hasKids:false, img:"VITINJA-Roly.jpg" },
+        { id:42, cat:'calzado', name:"CERYSON Roly", price:50.95, hasKids:false, img:"CERYSON-Roly.jpg" },
+        { id:43, cat:'calzado', name:"Noboa Roly", price:53.25, hasKids:false, img:"Noboa-Roly.jpg" },
+        { id:44, cat:'calzado', name:"Kercus", price:53.60, hasKids:false, img:"Kercus.jpg" },
+        { id:45, cat:'calzado', name:"GISKAN", price:54.95, hasKids:false, img:"GISKAN.jpg" },
+        { id:46, cat:'calzado', name:"Dan", price:8.95, hasKids:false, img:"Zueco-Sanitario-Light.jpg" },
+        { id:50, cat:'otros', name:"Buzo Roly Jimmy", price:29.00, hasKids:false, img:"Buzo-Roly-Jimmy.jpg" },
+        { id:51, cat:'otros', name:"Benoit delantal roly", price:8.50, hasKids:false, img:"Delantal-Roly-Benoit.jpg" },
+        { id:52, cat:'otros', name:"Dacosta", price:12.00, hasKids:false, img:"Dacosta.jpg" },
+        { id:53, cat:'otros', name:"Batali", price:14.00, hasKids:false, img:"Batali.jpg" },
+        { id:54, cat:'otros', name:"Gorra Roly Panel", price:3.50, hasKids:false, img:"Gorra-Roly-Panel.jpg" }
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('rayna_cart')) || [];
+    let curProd = null, selType = 'adulto', selSize = '', selPayMeth = '', shippingCost = 0;
+
+    function render(data) {
+        document.getElementById('grid').innerHTML = data.map(p => `
+            <div class="product-card">
+                <div class="product-img"><img src="img/${p.img}" onerror="this.src='https://via.placeholder.com/150'"></div>
+                <div class="product-info">
+                    <h3>${p.name}</h3>
+                    <span class="price">${p.price.toFixed(2)}€</span>
+                    <button class="btn-rayna" onclick="openModal(${p.id})">Añadir</button>
+                </div>
+            </div>`).join('');
+    }
+
+    function buscar() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        render(products.filter(p => p.name.toLowerCase().includes(q)));
+    }
+
+    function filterCat(cat, btn) {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        render(cat === 'todos' ? products : products.filter(p => p.cat === cat));
+    }
+
+    function openModal(id) {
+        curProd = products.find(p => p.id === id);
+        selType = 'adulto'; selSize = '';
+        document.getElementById('mTitle').innerText = curProd.name;
+        document.getElementById('checkPecho').checked = false;
+        document.getElementById('checkEspalda').checked = false;
+        document.getElementById('pillNino').style.display = curProd.hasKids ? 'block' : 'none';
+        renderPills(); calcularTotal();
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+    function setType(t) { selType = t; selSize = ''; renderPills(); calcularTotal(); }
+    
+    function renderPills() {
+        const sizes = (selType === 'nino') ? ['2A','4A','6A','8A','10A','12A'] : ['S','M','L','XL','XXL','3XL'];
+        document.getElementById('sizeGroup').innerHTML = sizes.map(s => `<div class="pill ${selSize===s?'active':''}" onclick="selectSize('${s}')">${s}</div>`).join('');
+        document.getElementById('pillAdulto').className = `pill ${selType==='adulto'?'active':''}`;
+        document.getElementById('pillNino').className = `pill ${selType==='nino'?'active':''}`;
+    }
+
+    function selectSize(s) { selSize = s; renderPills(); document.getElementById('sizeError').style.display='none'; }
+
+    function calcularTotal() {
+        if(!curProd) return 0;
+        let p = (selType === 'nino') ? curProd.kidPrice : curProd.price;
+        if(document.getElementById('checkPecho').checked) p += 3.50;
+        if(document.getElementById('checkEspalda').checked) p += 6.50;
+        document.getElementById('mPrice').innerText = p.toFixed(2) + "€";
+        return p;
+    }
+
+    function validateAndAdd() {
+        if(!selSize) return document.getElementById('sizeError').style.display='block';
+        const pLogo = document.getElementById('checkPecho').checked;
+        const eLogo = document.getElementById('checkEspalda').checked;
+        cart.push({
+            uid: Date.now(), name: curProd.name, talla: selSize,
+            color: document.getElementById('colorInput').value || 'Sin definir',
+            precio: calcularTotal(), qty: 1, pecho: pLogo, espalda: eLogo, custom: (pLogo || eLogo)
+        });
+        save(); closeModal(); toggleCart();
+    }
+
+    function toggleCart() {
+        const cartSidebar = document.getElementById('cartSidebar');
+        const active = cartSidebar.classList.toggle('active');
+        document.getElementById('servicesSidebar').classList.remove('active');
+        document.getElementById('overlay').style.display = active ? 'block' : 'none';
+        if(active) changeStep(1);
+    }
+
+    function toggleServices() {
+        const servicesSidebar = document.getElementById('servicesSidebar');
+        const active = servicesSidebar.classList.toggle('active');
+        document.getElementById('cartSidebar').classList.remove('active');
+        document.getElementById('overlay').style.display = active ? 'block' : 'none';
+    }
+
+    function changeStep(s) {
+        document.querySelectorAll('.checkout-step').forEach(x => x.classList.remove('active'));
+        document.getElementById('step' + s).classList.add('active');
+        document.getElementById('logoUploadSection').style.display = (s === 3 && cart.some(i => i.custom)) ? 'block' : 'none';
+    }
+
+    function updateUI() {
+        let sub = 0, totalQty = 0;
+        document.getElementById('cartItems').innerHTML = cart.map(i => {
+            sub += (i.precio * i.qty); totalQty += i.qty;
+            return `<div class="cart-item">
+                <div style="display:flex; justify-content:space-between; font-weight:800; font-size:0.75rem"><span>${i.name}</span><span>${(i.precio*i.qty).toFixed(2)}€</span></div>
+                <div style="font-size:0.6rem; color:#888; margin:4px 0;">${i.talla} | ${i.color}</div>
+                <div>${i.pecho ? '<span class="badge-custom">Pecho</span>' : ''}${i.espalda ? '<span class="badge-custom">Espalda</span>' : ''}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                    <div class="qty-box"><span class="qty-btn" onclick="changeQty(${i.uid},-1)">-</span><span>${i.qty}</span><span class="qty-btn" onclick="changeQty(${i.uid},1)">+</span></div>
+                    <i class="fas fa-trash-alt" onclick="removeItem(${i.uid})" style="color:var(--error); cursor:pointer;"></i>
+                </div>
+            </div>`;
+        }).join('');
+        document.getElementById('cart-count').innerText = totalQty;
+        document.getElementById('subtotalPrice').innerText = sub.toFixed(2) + "€";
+        document.getElementById('finalTotal').innerText = (sub + shippingCost).toFixed(2) + "€";
+    }
+
+    function changeQty(uid, d) { 
+        const i = cart.find(x => x.uid === uid); 
+        if(i && i.qty + d > 0) { i.qty += d; save(); } 
+    }
+    
+    function removeItem(uid) { 
+        cart = cart.filter(x => x.uid !== uid); 
+        save(); 
+    }
+    
+    function save() { 
+        localStorage.setItem('rayna_cart', JSON.stringify(cart)); 
+        updateUI(); 
+    }
+
+    function updateShippingUI() {
+        const type = document.getElementById('deliveryType').value;
+        document.getElementById('shippingFields').style.display = type === 'home' ? 'block' : 'none';
+        shippingCost = type === 'home' ? parseFloat(document.getElementById('shippingZone').value) : 0;
+        updateUI();
+    }
+
+    function selectPay(m) {
+        selPayMeth = m;
+        document.querySelectorAll('#step3 .pill').forEach(p => p.classList.remove('active'));
+        document.getElementById('pay' + m.charAt(0).toUpperCase() + m.slice(1)).classList.add('active');
+        document.getElementById('infoPayBox').style.display = 'block';
+        document.getElementById('payDetails').innerText = (m==='bizum') ? "BIZUM: 600 000 000" : "IBAN: ES00 1234 5678 9012";
+    }
+
+    async function sendToTelegram() {
+        const n = document.getElementById('userName').value, p = document.getElementById('userPhone').value;
+        if(!n || !p || !selPayMeth) return alert("Completa tus datos y selecciona pago");
+        
+        const b = document.getElementById('btnConfirmar'); 
+        b.innerText = "ENVIANDO..."; 
+        b.disabled = true;
+        const id = `RY-${Math.random().toString(36).substr(2,5).toUpperCase()}`;
+        
+        let txt = `🆕 *PEDIDO: ${id}*\n👤 ${n}\n📞 ${p}\n💳 ${selPayMeth.toUpperCase()}\n\n`;
+        cart.forEach(i => { txt += `• ${i.qty}x ${i.name} (${i.talla})\n`; });
+        txt += `\n💰 *TOTAL:* ${document.getElementById('finalTotal').innerText}`;
+
+        try {
+            await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({chat_id:TG_CHAT_ID, text:txt, parse_mode:'Markdown'})
+            });
+            
+            const logo = document.getElementById('logoFile').files[0];
+            if(logo) {
+                const fd = new FormData(); fd.append('chat_id', TG_CHAT_ID); fd.append('document', logo);
+                await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendDocument`, {method:'POST', body:fd});
+            }
+
+            document.getElementById('orderIdText').innerText = id;
+            document.getElementById('btnWhatsAppFinal').onclick = () => window.open(`https://wa.me/34600000000?text=Hola! Comprobante pedido ${id}`);
+            document.getElementById('successModal').style.display = 'flex';
+            cart = []; save();
+        } catch(e) { 
+            alert("Error al enviar"); 
+            b.disabled = false; 
+            b.innerText = "Confirmar"; 
+        }
+    }
+
+    function closeAll() {
+        document.getElementById('cartSidebar').classList.remove('active');
+        document.getElementById('servicesSidebar').classList.remove('active');
+        document.getElementById('overlay').style.display = 'none';
+        closeModal();
+    }
+
+    window.onload = () => {
+        // Al generar las categorías, nos aseguramos de que sean únicas
+        const cats = ['todos', ...new Set(products.map(p => p.cat))];
+        document.getElementById('catBar').innerHTML = cats.map(c => `<button class="cat-btn ${c==='todos'?'active':''}" onclick="filterCat('${c}', this)">${c}</button>`).join('');
+        render(products);
+        updateUI();
+    };
+</script>
+</body>
+</html>
