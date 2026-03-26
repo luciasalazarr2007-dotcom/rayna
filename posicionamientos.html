@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAYNA — Posicionamiento de Marca</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* PALETA RAYNA ROPA LABORAL (ACTUALIZADA) */
+  --rayna-cyan: #79d2cc;          /* El color cian del catálogo */
+  --rayna-bg: #0a0a0a;            /* Fondo oscuro exacto del HTML */
+  --rayna-card: #121212;          /* Fondo de tarjetas del catálogo */
+  --rayna-text: #ffffff;
+  --rayna-muted: #888888;
+  --rayna-border: #222222;        /* Color de borde del catálogo */
+  
+  /* VARIABLES HTML ESPECÍFICAS */
+  --oro: var(--rayna-cyan); 
+  --blanco: #ffffff;
+  --gris: #161616;
+  --gris-claro: #888888;
+  
+  /* PROPORCIONES */
+  --p-inline: clamp(1.2rem, 6vw, 5rem);
+  --header-h: 70px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background-color: var(--rayna-bg);
+  color: var(--rayna-text);
+  font-family: 'Inter', 'DM Sans', sans-serif; /* Priorizando Inter como en el catálogo */
+  line-height: 1.6;
+}
+
+/* --- NAVEGACIÓN --- */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; height: var(--header-h);
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 var(--p-inline); background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(10px); border-bottom: 1px solid var(--rayna-border); z-index: 1000;
+}
+
+.nav-logo { 
+  font-family: 'Bebas Neue', sans-serif; 
+  font-size: 1.8rem; 
+  letter-spacing: 0.15em; 
+  color: var(--rayna-cyan); /* Logo en cian como en la web */
+}
+
+.nav-links { display: flex; gap: 1.5rem; list-style: none; }
+
+.nav-links a {
+  color: var(--rayna-muted); text-decoration: none; font-size: 0.7rem;
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
+  transition: 0.3s; cursor: pointer;
+}
+
+.nav-links a:hover, .nav-links a.active { color: var(--rayna-cyan); }
+
+/* --- SECCIONES --- */
+.section {
+  display: none; min-height: 100vh;
+  padding: calc(var(--header-h) + 4rem) var(--p-inline) 5rem;
+  max-width: 1400px; margin: 0 auto;
+  animation: fadeIn 0.6s var(--ease);
+}
+
+.section.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- HERO --- */
+#hero { flex-direction: column; justify-content: center; }
+
+.hero-eyebrow { color: var(--rayna-cyan); font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1rem; }
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 10vw, 7.5rem);
+  line-height: 0.9; text-transform: uppercase; margin-bottom: 1.5rem;
+}
+
+.hero-title span { color: var(--rayna-cyan); }
+
+.hero-subtitle { color: var(--rayna-muted); font-size: clamp(1rem, 2vw, 1.4rem); margin-bottom: 3rem; max-width: 600px; }
+
+.hero-cta { display: flex; gap: 1rem; }
+
+.hero-stats {
+  display: flex; gap: 4rem; margin-top: 5rem; padding-top: 3rem;
+  border-top: 1px solid var(--rayna-border);
+}
+
+.stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--rayna-cyan); }
+
+.stat-label { font-size: 0.7rem; text-transform: uppercase; color: var(--rayna-muted); letter-spacing: 1px; }
+
+/* --- BOTONES --- */
+.btn {
+  padding: 1.1rem 2.5rem; font-size: 0.75rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 2px; border: none; cursor: pointer;
+  transition: 0.3s; border-radius: 8px; /* Redondeado sutil como el catálogo */
+}
+
+.btn-primary { background: var(--rayna-cyan); color: #000; } /* Texto negro sobre cian */
+.btn-primary:hover { background: #5eb6b0; transform: translateY(-2px); }
+
+.btn-outline { background: transparent; border: 1px solid var(--rayna-border); color: white; }
+.btn-outline:hover { border-color: var(--rayna-cyan); color: var(--rayna-cyan); }
+
+/* --- COMPONENTES DE CONTENIDO --- */
+.section-header { margin-bottom: 4rem; }
+
+.section-eyebrow { color: var(--rayna-cyan); font-size: 0.8rem; margin-bottom: 0.5rem; font-weight: 600; }
+
+.section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 6vw, 4.5rem); text-transform: uppercase; }
+
+.section-title span { color: var(--rayna-cyan); }
+
+.statement-box { background: var(--rayna-card); padding: 3rem; border-left: 4px solid var(--rayna-cyan); margin-bottom: 4rem; border-radius: 0 12px 12px 0; }
+
+.statement-text { font-size: 1.25rem; line-height: 1.6; }
+
+/* GRIDS */
+.pillars-grid, .audience-grid, .messages-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem; margin-bottom: 4rem;
+}
+
+.pillar, .audience-card, .message-card {
+  background: var(--rayna-card); padding: 2.5rem; border: 1px solid var(--rayna-border);
+  transition: 0.3s; border-radius: 12px;
+}
+
+.pillar:hover, .audience-card:hover { border-color: var(--rayna-cyan); }
+
+.pillar-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: var(--rayna-cyan); margin-bottom: 1rem; }
+
+.pillar-title { font-weight: 700; margin-bottom: 1rem; text-transform: uppercase; font-size: 0.9rem; }
+
+.pillar-desc { font-size: 0.85rem; color: var(--rayna-muted); }
+
+/* TABLAS */
+.diff-table { width: 100%; border-collapse: collapse; margin-bottom: 3rem; background: var(--rayna-card); border-radius: 12px; overflow: hidden; border: 1px solid var(--rayna-border); }
+
+.diff-table th { 
+  text-align: left; padding: 1.2rem; background: #161616; 
+  color: var(--rayna-cyan); font-size: 0.7rem; text-transform: uppercase;
+}
+
+.diff-table td { padding: 1.2rem; border-bottom: 1px solid var(--rayna-border); font-size: 0.85rem; }
+
+.vs-rayna { color: var(--rayna-cyan); font-weight: 800; }
+
+/* HOJA DE RUTA (Roadmap) */
+.roadmap { margin-top: 3rem; }
+
+.roadmap-item { display: flex; gap: 2rem; margin-bottom: 3rem; }
+
+.roadmap-period { 
+  min-width: 100px; font-family: 'Bebas Neue', sans-serif; 
+  font-size: 1.2rem; color: var(--rayna-cyan); line-height: 1;
+}
+
+.roadmap-content { flex: 1; padding-bottom: 2rem; border-bottom: 1px solid var(--rayna-border); }
+
+.roadmap-title { font-weight: 700; margin-bottom: 1rem; text-transform: uppercase; color: var(--rayna-cyan); }
+
+.roadmap-actions { font-size: 0.85rem; color: var(--rayna-muted); line-height: 1.8; }
+
+/* IDENTIDAD VERBAL (Tags) */
+.voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem; }
+
+.word-tag { 
+  display: inline-block; padding: 0.3rem 0.8rem; margin: 0.3rem; 
+  font-size: 0.7rem; border-radius: 20px; text-transform: uppercase; font-weight: 700;
+}
+
+.word-tag-yes { background: rgba(121, 210, 204, 0.1); color: var(--rayna-cyan); border: 1px solid var(--rayna-cyan); }
+
+.word-tag-no { background: rgba(255, 255, 255, 0.05); color: #666; border: 1px solid var(--rayna-border); }
+
+/* FOOTER */
+.section-footer {
+  margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--rayna-border);
+  display: flex; justify-content: space-between; font-size: 0.65rem;
+  text-transform: uppercase; color: var(--rayna-muted); letter-spacing: 1px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hero-stats { flex-direction: column; gap: 2rem; }
+  .voice-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo" style="text-decoration: none;">RAYNA</a>
+  <ul class="nav-links">
+    <li><a onclick="showSection('hero')" class="active" id="nav-hero">Inicio</a></li>
+    <li><a onclick="showSection('esencia')" id="nav-esencia">Esencia</a></li>
+    <li><a onclick="showSection('diferenciacion')" id="nav-diferenciacion">Diferenciación</a></li>
+    <li><a onclick="showSection('mensajes')" id="nav-mensajes">Mensajes</a></li>
+    <li><a onclick="showSection('identidad')" id="nav-identidad">Identidad</a></li>
+    <li><a onclick="showSection('hoja-de-ruta')" id="nav-hoja-de-ruta">Hoja de ruta</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero" class="section active">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Posicionamiento de Marca · 2025</p>
+    <h1 class="hero-title">RAYNA<br><span>Personali-<br>zaciones</span></h1>
+    <p class="hero-subtitle">Tu negocio, con identidad propia.<br>Producción artesanal. Resultados profesionales.</p>
+    <div class="hero-cta">
+      <button class="btn btn-primary" onclick="showSection('esencia')">Ver posicionamiento</button>
+      <button class="btn btn-outline" onclick="showSection('hoja-de-ruta')">Hoja de ruta</button>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">70–80%</div>
+      <div class="stat-label">Margen objetivo</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">6+</div>
+      <div class="stat-label">Técnicas propias</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1</div>
+      <div class="stat-label">Taller en Pizarra</div>
+    </div>
+  </div>
+</section>
+
+<!-- ESENCIA -->
+<section id="esencia" class="section">
+  <div class="section-header">
+    <p class="section-eyebrow">01 · Fundamento</p>
+    <h2 class="section-title">La <span>Esencia</span> de RAYNA</h2>
+  </div>
+
+  <div class="statement-box">
+    <p class="statement-text">
+      RAYNA es el aliado de imagen para negocios que quieren <strong>ser recordados</strong>.<br>
+      No somos el más barato — somos el que hace que tu marca <strong>luzca profesional</strong>,
+      con producción propia, materiales de calidad y una atención que siente como si fuéramos
+      <strong>parte de tu equipo</strong>.
+    </p>
+  </div>
+
+  <div class="pillars-grid">
+    <div class="pillar">
+      <div class="pillar-num">01</div>
+      <div class="pillar-title">Producción Propia</div>
+      <div class="pillar-desc">Control total del resultado. Sin intermediarios. Cada pieza sale de nuestro taller con un estándar definido.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">02</div>
+      <div class="pillar-title">Soluciones Completas</div>
+      <div class="pillar-desc">Desde la ropa de trabajo hasta el rótulo del local. Un solo proveedor de imagen para todo tu negocio.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">03</div>
+      <div class="pillar-title">Atención Cercana</div>
+      <div class="pillar-desc">Hablamos tu idioma. Asesoramos a quien no sabe por dónde empezar y resolvemos a quien ya sabe lo que quiere.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">04</div>
+      <div class="pillar-title">Imagen Cuidada</div>
+      <div class="pillar-desc">No entregamos productos, entregamos imagen de marca. Cada encargo es una extensión de tu identidad visual.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-num">05</div>
+      <div class="pillar-title">Flexibilidad Real</div>
+      <div class="pillar-desc">Pequeñas tiradas, pedidos únicos, packs completos. Nos adaptamos al tamaño y ritmo de tu negocio.</div>
+    </div>
+  </div>
+
+  <div class="section-footer">
+    <div class="footer-brand">RAYNA · Pizarra, Málaga</div>
+    <div class="footer-note">Posicionamiento de marca · Documento interno</div>
+  </div>
+</section>
+
+<!-- DIFERENCIACIÓN -->
+<section id="diferenciacion" class="section">
+  <div class="section-header">
+    <p class="section-eyebrow">02 · Mercado</p>
+    <h2 class="section-title">¿Por qué <span>RAYNA</span>?</h2>
+  </div>
+
+  <p style="color: var(--gris-claro); margin-bottom: 2rem; font-size: 0.9rem; line-height: 1.7; max-width: 600px;">
+    El mercado de personalizaciones está saturado de opciones low-cost online. RAYNA no compite en ese territorio — compite en valor percibido, relación y resultado final.
+  </p>
+
+  <table class="diff-table">
+    <thead>
+      <tr>
+        <th>Aspecto</th>
+        <th>Competencia / Online</th>
+        <th>RAYNA</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag">Calidad</span></td>
+        <td class="vs-otros">Variable. Dependiente de terceros.</td>
+        <td class="vs-rayna">Supervisada en cada fase. Producción propia.</td>
+      </tr>
+      <tr>
+        <td><span class="tag">Atención</span></td>
+        <td class="vs-otros">Formulario online. Sin asesoramiento.</td>
+        <td class="vs-rayna">Persona real, cercanía, consejo honesto.</td>
+      </tr>
+      <tr>
+        <td><span class="tag">Versatilidad</span></td>
+        <td class="vs-otros">Una sola técnica o producto.</td>
+        <td class="vs-rayna">DTF, sublimación, láser, vinilo, ropa, regalos.</td>
+      </tr>
+      <tr>
+        <td><span class="tag">Plazo</span></td>
+        <td class="vs-otros">7–15 días de envío, sin gestión.</td>
+        <td class="vs-rayna">Tiempos ajustados, comunicación directa.</td>
+      </tr>
+      <tr>
+        <td><span class="tag">Imagen final</span></td>
+        <td class="vs-otros">El cliente manda un archivo, recibe un objeto.</td>
+        <td class="vs-rayna">Criterio estético + orientación de diseño incluida.</td>
+      </tr>
+      <tr>
+        <td><span class="tag">Relación</span></td>
+        <td class="vs-otros">Transaccional. Sin continuidad.</td>
+        <td class="vs-rayna">Proveedor de confianza a largo plazo.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="background: rgba(201,168,76,0.07); border-left: 3px solid var(--oro); padding: 1.5rem 2rem; margin-bottom: 2rem;">
+    <p style="font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--oro); margin-bottom: 0.5rem;">Posición competitiva</p>
+    <p style="font-family: 'DM Serif Display', serif; font-size: 1.1rem; line-height: 1.5;">
+      RAYNA ocupa el espacio de <em>proveedor integral de imagen local</em> con capacidad artesanal y mentalidad de marca. Un hueco que muy pocos cubren en la comarca de Málaga.
+    </p>
+  </div>
+
+  <div class="audience-grid">
+    <div class="audience-card">
+      <div class="audience-icon">🏗️</div>
+      <div class="audience-name">Construcción</div>
+      <div class="audience-need">Ropa laboral uniformada que transmita seriedad y seguridad.</div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">🍽️</div>
+      <div class="audience-name">Hostelería</div>
+      <div class="audience-need">Uniformes, cartas, detalles que elevan la experiencia.</div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">⚽</div>
+      <div class="audience-name">Clubs deportivos</div>
+      <div class="audience-need">Equipaciones, acreditaciones, trofeos y regalos de equipo.</div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">🚀</div>
+      <div class="audience-name">Emprendedores</div>
+      <div class="audience-need">Imagen desde cero: packaging, uniformes, roll-ups, packs.</div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">🏪</div>
+      <div class="audience-name">Comercio local</div>
+      <div class="audience-need">Rótulos, vinilos, regalos de temporada y fidelización.</div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">🎪</div>
+      <div class="audience-name">Eventos</div>
+      <div class="audience-need">Merchandising, señalética y materiales para el día B.</div>
+    </div>
+  </div>
+</section>
+
+<!-- MENSAJES -->
+<section id="mensajes" class="section">
+  <div class="section-header">
+    <p class="section-eyebrow">03 · Comunicación</p>
+    <h2 class="section-title">Mensajes <span>Clave</span></h2>
+  </div>
+
+  <p style="color: var(--gris-claro); margin-bottom: 2rem; font-size: 0.9rem; line-height: 1.7; max-width: 600px;">
+    Cada segmento tiene una motivación diferente. Aquí los mensajes que conectan directamente con lo que cada cliente necesita escuchar.
+  </p>
+
+  <div class="messages-grid">
+    <div class="message-card">
+      <div class="message-audience">Para · Nuevos emprendedores</div>
+      <p class="message-headline">"Tu imagen habla antes de que tú abras la boca."</p>
+      <p class="message-body">Te ayudamos a lanzarte con una imagen profesional desde el primer día. Uniformes, señalética, packaging: todo en un pack pensado para negocios que empiezan con ambición.</p>
+    </div>
+    <div class="message-card">
+      <div class="message-audience">Para · Hostelería & Comercio</div>
+      <p class="message-headline">"La experiencia de tu cliente empieza en los detalles."</p>
+      <p class="message-body">Un uniforme cuidado, un cristal bien rotulado o un regalo corporativo con tu logo pueden convertir un cliente en embajador. Nosotros lo materializamos.</p>
+    </div>
+    <div class="message-card">
+      <div class="message-audience">Para · Empresas & Construcción</div>
+      <p class="message-headline">"Tu equipo en obra también es tu carta de presentación."</p>
+      <p class="message-body">La ropa de trabajo uniforme y con tu marca proyecta profesionalidad a clientes y socios. Producción en serie con calidad garantizada.</p>
+    </div>
+    <div class="message-card">
+      <div class="message-audience">Para · Eventos & Clubs</div>
+      <p class="message-headline">"Momentos únicos merecen materiales a la altura."</p>
+      <p class="message-body">Equipaciones, trofeos personalizados, acreditaciones, merchandising. Lo hacemos con mimo porque sabemos que es una fecha señalada.</p>
+    </div>
+  </div>
+
+  <div style="background: var(--gris); border: 1px solid rgba(201,168,76,0.2); padding: 2rem; margin-bottom: 2rem;">
+    <p style="font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--oro); margin-bottom: 1rem;">Tagline recomendado</p>
+    <p style="font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.05em; margin-bottom: 0.5rem;">TU MARCA, EN MANOS DE QUIEN LA CUIDA.</p>
+    <p style="font-size: 0.78rem; color: var(--gris-claro); line-height: 1.6;">Alternativas: <em>"Imagen que se nota." · "Hecho aquí. Con intención." · "Personalización profesional, de Málaga para Málaga."</em></p>
+  </div>
+</section>
+
+<!-- IDENTIDAD VERBAL -->
+<section id="identidad" class="section">
+  <div class="section-header">
+    <p class="section-eyebrow">04 · Voz & Tono</p>
+    <h2 class="section-title">Identidad <span>Verbal</span></h2>
+  </div>
+
+  <div class="voice-grid">
+    <div class="voice-card">
+      <p class="voice-type voice-is">✓ &nbsp;RAYNA habla así</p>
+      <div class="voice-words">
+        <span class="word-tag word-tag-yes">Cercana</span>
+        <span class="word-tag word-tag-yes">Directa</span>
+        <span class="word-tag word-tag-yes">Segura</span>
+        <span class="word-tag word-tag-yes">Honesta</span>
+        <span class="word-tag word-tag-yes">Profesional</span>
+        <span class="word-tag word-tag-yes">Sin tecnicismos</span>
+        <span class="word-tag word-tag-yes">Con criterio</span>
+        <span class="word-tag word-tag-yes">Práctica</span>
+      </div>
+    </div>
+    <div class="voice-card">
+      <p class="voice-type voice-not">✗ &nbsp;RAYNA no suena</p>
+      <div class="voice-words">
+        <span class="word-tag word-tag-no">Corporativa fría</span>
+        <span class="word-tag word-tag-no">Vendedora agresiva</span>
+        <span class="word-tag word-tag-no">Informal en exceso</span>
+        <span class="word-tag word-tag-no">Técnica sin contexto</span>
+        <span class="word-tag word-tag-no">Genérica</span>
+        <span class="word-tag word-tag-no">Defensiva</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+    <div style="border: 1px solid rgba(245,242,237,0.08); padding: 1.75rem;">
+      <p style="font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris-claro); margin-bottom: 1rem;">❌ Ejemplo incorrecto</p>
+      <p style="font-size: 0.85rem; color: #d4806a; line-height: 1.7; font-style: italic;">"Somos expertos en personalización textil y rótulos, ofrecemos soluciones integrales para el sector empresarial con tecnología punta."</p>
+    </div>
+    <div style="border: 1px solid rgba(201,168,76,0.2); padding: 1.75rem;">
+      <p style="font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--oro); margin-bottom: 1rem;">✅ Ejemplo correcto</p>
+      <p style="font-size: 0.85rem; color: var(--blanco); line-height: 1.7; font-style: italic;">"Te ayudamos a que tu negocio tenga una imagen que se recuerde. Ropa de trabajo, rótulos, regalos — todo hecho aquí, con control de calidad."</p>
+    </div>
+  </div>
+
+  <div style="background: rgba(201,168,76,0.07); border-left: 3px solid var(--oro); padding: 1.5rem 2rem;">
+    <p style="font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--oro); margin-bottom: 0.75rem;">Promesa de marca</p>
+    <p style="font-family: 'DM Serif Display', serif; font-size: 1.05rem; line-height: 1.6;">
+      En RAYNA nos importa que tu negocio luzca como merece. Por eso no delegamos la producción, no cortamos por lo sano y no desaparecemos cuando hay un problema.
+    </p>
+  </div>
+</section>
+
+<!-- HOJA DE RUTA -->
+<section id="hoja-de-ruta" class="section">
+  <div class="section-header">
+    <p class="section-eyebrow">05 · Acción</p>
+    <h2 class="section-title">Hoja de <span>Ruta</span></h2>
+  </div>
+
+  <p style="color: var(--gris-claro); margin-bottom: 2.5rem; font-size: 0.9rem; line-height: 1.7; max-width: 600px;">
+    Para pasar del posicionamiento definido a ser el referente en personalización en Málaga, aquí las acciones prioritarias por etapa.
+  </p>
+
+  <div class="roadmap">
+    <div class="roadmap-item">
+      <div class="roadmap-period">AHORA<br>1–3 meses</div>
+      <div class="roadmap-line"></div>
+      <div class="roadmap-content">
+        <div class="roadmap-title">Consolidar la base de posicionamiento</div>
+        <div class="roadmap-actions">
+          · Unificar el mensaje en Instagram, WhatsApp Business y presencia física<br>
+          · Definir el PACK PRO con precio, contenido y presentación clara<br>
+          · Crear un portafolio de casos reales por sector (hostelería, construcción, eventos)<br>
+          · Recopilar primeras reseñas de clientes satisfechos
+        </div>
+      </div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-period">CORTO<br>3–6 meses</div>
+      <div class="roadmap-line"></div>
+      <div class="roadmap-content">
+        <div class="roadmap-title">Visibilidad local y digital</div>
+        <div class="roadmap-actions">
+          · SEO local: optimizar ficha de Google Business con fotos, servicios y palabras clave<br>
+          · Contenido en RRSS mostrando el proceso de producción (behind the scenes)<br>
+          · Alianzas con gestorías, asesorías y diseñadores que asesoren a nuevos autónomos<br>
+          · Primeras campañas de Google Ads local (bajo presupuesto, alta segmentación)
+        </div>
+      </div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-period">MEDIO<br>6–12 meses</div>
+      <div class="roadmap-line"></div>
+      <div class="roadmap-content">
+        <div class="roadmap-title">Escalar con sistema</div>
+        <div class="roadmap-actions">
+          · Automatizar seguimiento de presupuestos y pedidos<br>
+          · Lanzar web con catálogo, formularios de contacto y opción de presupuesto online<br>
+          · Programa de referidos para clientes actuales<br>
+          · Explorar venta a distancia (envíos a toda Andalucía)
+        </div>
+      </div>
+    </div>
+    <div class="roadmap-item">
+      <div class="roadmap-period">VISIÓN<br>1–2 años</div>
+      <div class="roadmap-line"></div>
+      <div class="roadmap-content">
+        <div class="roadmap-title">Referente provincial</div>
+        <div class="roadmap-actions">
+          · Posicionarse como el proveedor de referencia para pymes y autónomos en Málaga<br>
+          · Explorar acuerdos con cámaras de comercio y asociaciones empresariales<br>
+          · Línea de producto propio (colecciones estacionales de regalo corporativo)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-footer">
+    <div class="footer-brand">RAYNA · Posicionamiento 2025</div>
+    <div class="footer-note">Documento de trabajo interno · Actualizable</div>
+  </div>
+</section>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.getElementById('nav-' + id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
